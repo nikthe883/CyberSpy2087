@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,11 @@ public class Player : MonoBehaviour
 
     private float cameraVerticalRotation;
 
+    public GameObject bullet;
+    public Transform firePosition;
+
+    public GameObject muzzleFlash, bulletHole;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,10 +32,38 @@ public class Player : MonoBehaviour
     {
         PlayerMovement();
 
-        CAmeraMovement();
+        CameraMovement();
+
+        Shoot();
     }
 
-    private void CAmeraMovement()
+    private void Shoot()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+
+            if(Physics.Raycast(myCameraHead.position,myCameraHead.forward, out hit, 100f))
+            {
+
+                if(Vector3.Distance(myCameraHead.position, hit.point) > 2f)
+                {
+                    firePosition.LookAt(hit.point);
+                }
+
+                firePosition.LookAt(hit.point);
+            }
+            else
+            {
+                firePosition.LookAt(myCameraHead.position + (myCameraHead.forward * 50f));
+            }
+            Instantiate(muzzleFlash, firePosition.position, firePosition.rotation, firePosition);
+            Instantiate(bullet, firePosition.position, firePosition.rotation);
+            
+        }
+    }
+
+    private void CameraMovement()
     {
         float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity * Time.deltaTime;
