@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 12.5f;
+    public float speed = 12.5f, runSpeed = 25f;
 
     // Adding the gravity
     public Vector3 velocity;
@@ -62,7 +62,11 @@ public class Player : MonoBehaviour
         Jump();
 
         Crouching();
+
+ 
     }
+
+ 
 
     private void Crouching()
     {
@@ -158,9 +162,14 @@ public class Player : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         Vector3 movement = x * transform.right + z * transform.forward;
+
+        if (Input.GetKey(KeyCode.LeftShift) && !isCrouching)
+        {
+            movement = movement * runSpeed * Time.deltaTime;
+        }
         
 
-        if (isCrouching)
+        else if (isCrouching)
         {
             movement = crouchingSpeed * Time.deltaTime * movement;
         }
